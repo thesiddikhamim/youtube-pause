@@ -205,74 +205,82 @@
   transform: scale(1.06);
 }
 
-/* ── Flag ───────────────────────────────────────────────── */
-.ytmp-flag {
+/* ── Tag picker ─────────────────────────────────────────── */
+.ytmp-tags {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+}
+
+.ytmp-tags-label {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
-  color: #9aa1ae;
-  cursor: pointer;
-  user-select: none;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 999px;
-  padding: 9px 18px;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #565e6b;
 }
 
-.ytmp-flag:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.18);
+.ytmp-tags-options {
+  display: flex;
+  gap: 12px;
+}
+
+.ytmp-tag {
+  font-family: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #9aa1ae;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ytmp-tag:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
   color: #c3c9d4;
 }
 
-.ytmp-flag input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  cursor: pointer;
-  position: relative;
-  flex-shrink: 0;
-  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.ytmp-flag input[type="checkbox"]:hover {
-  border-color: rgba(255, 125, 156, 0.55);
-}
-
-.ytmp-flag input[type="checkbox"]:checked {
-  background: #ff7d9c;
-  border-color: #ff7d9c;
-  box-shadow: 0 0 12px rgba(255, 125, 156, 0.45);
-}
-
-.ytmp-flag input[type="checkbox"]:checked::after {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 1.5px;
-  width: 4.5px;
-  height: 9px;
-  border: solid #26060f;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-.ytmp-flag input[type="checkbox"]:focus-visible {
+.ytmp-tag:focus-visible {
   outline: 1px solid #7cc5ff;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-.ytmp-flag:has(input:checked) {
-  border-color: rgba(255, 125, 156, 0.45);
-  background: rgba(255, 125, 156, 0.08);
-  color: #ffb3c2;
+.ytmp-tag.ytmp-selected {
+  color: #f2f4f8;
+}
+
+.ytmp-tag-waste.ytmp-selected {
+  border-color: rgba(255, 125, 156, 0.6);
+  background: rgba(255, 125, 156, 0.13);
+  box-shadow: 0 0 18px rgba(255, 125, 156, 0.25);
+}
+
+.ytmp-tag-study.ytmp-selected {
+  border-color: rgba(124, 197, 255, 0.6);
+  background: rgba(30, 140, 255, 0.14);
+  box-shadow: 0 0 18px rgba(46, 141, 255, 0.28);
+}
+
+.ytmp-req {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #565e6b;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 2px 8px;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 /* ── Journal ────────────────────────────────────────────── */
@@ -328,7 +336,26 @@
 .ytmp-actions {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 16px;
+}
+
+.ytmp-hidden {
+  display: none;
+}
+
+.ytmp-ready {
+  animation: ytmp-ready-in 0.25s ease-out;
+}
+
+@keyframes ytmp-ready-in {
+  from {
+    transform: translateY(4px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* ── Buttons ────────────────────────────────────────────── */

@@ -18,22 +18,30 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && changes.history) load();
 });
 
+const TAG_LABELS = { study: "Study", waste: "Waste" };
+
+function tagOf(h) {
+  return h.tag || (h.flagged ? "waste" : null);
+}
+
 function renderStats() {
   document.getElementById("statTotal").textContent = history.length;
   document.getElementById("statJournal").textContent = history.filter(
     (h) => h.reason
   ).length;
   document.getElementById("statFlagged").textContent = history.filter(
-    (h) => h.flagged
+    (h) => tagOf(h) === "waste"
   ).length;
 }
 
 function render() {
   const items = history.filter((h) => {
-    if (filter === "flagged" && !h.flagged) return false;
-    if (filter === "important" && h.flagged) return false;
+    if (filter === "study" && tagOf(h) !== "study") return false;
+    if (filter === "waste" && tagOf(h) !== "waste") return false;
     if (query) {
-      const hay = `${h.title} ${h.channel} ${h.reason || ""}`.toLowerCase();
+      const hay = `${h.title} ${h.channel} ${h.reason || ""} ${
+        TAG_LABELS[tagOf(h)] || ""
+      }`.toLowerCase();
       if (!hay.includes(query)) return false;
     }
     return true;
@@ -63,6 +71,10 @@ function cardHtml(h) {
     h.reason && h.reason.length > 0
       ? `<div class="reason">${escapeHtml(h.reason)}</div>`
       : "";
+  const tag = tagOf(h);
+  const tagBadge = tag
+    ? `<span class="badge tag-${tag}">${TAG_LABELS[tag]}</span>`
+    : '<span class="badge none">—</span>';
   return `
     <div class="card">
       <img class="thumb" src="${h.thumbnail}" alt="" loading="lazy" onclick="window.open('${watchUrl}')" />
@@ -71,10 +83,7 @@ function cardHtml(h) {
         <div class="channel">${escapeHtml(h.channel || "Unknown channel")}</div>
         ${reason}
         <div class="meta">
-          <span class="badge ${h.mode === "journal" ? "journal" : "timer"}">${
-    h.mode === "journal" ? "Journal" : "Timer"
-  }</span>
-          ${h.flagged ? '<span class="badge flagged">Unimportant</span>' : ""}
+          ${tagBadge}
           <span class="time">${date}</span>
         </div>
       </div>

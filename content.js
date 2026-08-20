@@ -139,10 +139,13 @@ function buildOverlay() {
           placeholder="In at least ${MIN_WORDS} words, explain why this video truly helps you right now, how you'll use it, or be honest that you're just procrastinating..."></textarea>
         <div class="ytmp-words"><span class="ytmp-wordcount">0</span>/${MIN_WORDS} words</div>
       </div>
-      <label class="ytmp-flag">
-        <input type="checkbox" class="ytmp-flag-check" />
-        <span>This is unimportant / I'm just wasting time</span>
-      </label>
+      <div class="ytmp-tags">
+        <div class="ytmp-tags-label">This video is <span class="ytmp-req">Required</span></div>
+        <div class="ytmp-tags-options" role="radiogroup" aria-label="Why are you watching this?">
+          <button type="button" class="ytmp-tag ytmp-tag-waste" data-tag="waste" role="radio" aria-checked="false">Waste</button>
+          <button type="button" class="ytmp-tag ytmp-tag-study" data-tag="study" role="radio" aria-checked="false">Study</button>
+        </div>
+      </div>
       <div class="ytmp-saved">Saved to history ✓</div>
       <div class="ytmp-actions">
         <button class="ytmp-continue" disabled>Continue</button>
@@ -161,12 +164,18 @@ function buildOverlay() {
         <span class="ytmp-count">${settings.delaySeconds}</span>
       </div>
       <p class="ytmp-message"></p>
-      <label class="ytmp-flag">
-        <input type="checkbox" class="ytmp-flag-check" />
-        <span>This is unimportant / I'm just wasting time</span>
-      </label>
+      <div class="ytmp-tags">
+        <div class="ytmp-tags-label">This video is <span class="ytmp-req">Required</span></div>
+        <div class="ytmp-tags-options" role="radiogroup" aria-label="Why are you watching this?">
+          <button type="button" class="ytmp-tag ytmp-tag-waste" data-tag="waste" role="radio" aria-checked="false">Waste</button>
+          <button type="button" class="ytmp-tag ytmp-tag-study" data-tag="study" role="radio" aria-checked="false">Study</button>
+        </div>
+      </div>
       <div class="ytmp-saved">Saved to history ✓</div>
-      <button class="ytmp-cancel">Actually, I don't need to watch this right now</button>
+      <div class="ytmp-actions">
+        <button class="ytmp-continue ytmp-hidden" disabled>Continue</button>
+        <button class="ytmp-cancel">Actually, I don't need to watch this right now</button>
+      </div>
     `;
   }
 
@@ -201,8 +210,38 @@ function startPause() {
   const observer = new MutationObserver(() => freezeAllVideos());
   observer.observe(document.documentElement, { childList: true, subtree: true });
 
-  const flagCheck = overlay.querySelector(".ytmp-flag-check");
+  const tagButtons = overlay.querySelectorAll(".ytmp-tag");
   const savedEl = overlay.querySelector(".ytmp-saved");
+  let continueBtn = null;
+  let finishCountdown = null;
+  let selectedTag = null;
+
+  const countWords = () =>
+    (overlay.querySelector(".ytmp-journal")?.value.trim().match(/\S+/g) || []).length;
+
+  const selectTag = (tag) => {
+    selectedTag = tag;
+    for (const btn of tagButtons) {
+      const isSelected = btn.dataset.tag === tag;
+      btn.classList.toggle("ytmp-selected", isSelected);
+      btn.setAttribute("aria-checked", String(isSelected));
+    }
+    updateContinue();
+  };
+
+  for (const btn of tagButtons) {
+    btn.addEventListener("click", () => selectTag(btn.dataset.tag));
+  }
+
+  const updateContinue = () => {
+    if (!continueBtn) return;
+    const ready =
+      settings.mode === "journal"
+        ? selectedTag !== null && countWords() >= MIN_WORDS
+        : selectedTag !== null;
+    continueBtn.disabled = !ready;
+    continueBtn.classList.toggle("ytmp-ready", ready);
+  };
 
   const dismiss = (shouldSave) => {
     clearInterval(timer);
@@ -210,9 +249,8 @@ function startPause() {
     overlay.classList.add("ytmp-done");
     if (shouldSave) {
       const reason = overlay.querySelector(".ytmp-journal")?.value?.trim() || null;
-      const flagged = flagCheck?.checked || false;
       getMetaWithRetry((meta) =>
-        saveHistory({ mode: settings.mode, reason, flagged }, videoId, meta)
+        saveHistory({ mode: settings.mode, reason, tag: selectedTag }, videoId, meta)
       );
       if (savedEl) {
         savedEl.classList.add("show");
@@ -229,7 +267,7 @@ function startPause() {
   const onKey = (e) => {
     if (e.key === "Escape" && settings.mode !== "journal") {
       e.preventDefault();
-      dismiss(true);
+      finishCountdown && finishCountdown();
     }
   };
 
@@ -238,14 +276,14 @@ function startPause() {
   if (settings.mode === "journal") {
     const textarea = overlay.querySelector(".ytmp-journal");
     const wordEl = overlay.querySelector(".ytmp-wordcount");
-    const continueBtn = overlay.querySelector(".ytmp-continue");
+    continueBtn = overlay.querySelector(".ytmp-continue");
 
     const updateCounter = () => {
-      const count = (textarea.value.trim().match(/\S+/g) || []).length;
+      const count = countWords();
       wordEl.textContent = count;
       wordEl.parentElement.classList.toggle("ytmp-met", count >= MIN_WORDS);
       textarea.classList.toggle("ytmp-met", count >= MIN_WORDS);
-      continueBtn.disabled = count < MIN_WORDS;
+      updateContinue();
     };
     textarea.addEventListener("input", updateCounter);
 
@@ -253,18 +291,27 @@ function startPause() {
   } else {
     let remaining = settings.delaySeconds;
     const countEl = overlay.querySelector(".ytmp-count");
+    continueBtn = overlay.querySelector(".ytmp-continue");
+
+    finishCountdown = () => {
+      clearInterval(timer);
+      countEl.textContent = "0";
+      continueBtn.classList.remove("ytmp-hidden");
+      updateContinue();
+    };
 
     timer = setInterval(() => {
       remaining -= 1;
       if (remaining <= 0) {
-        dismiss(true);
+        finishCountdown();
         return;
       }
       countEl.textContent = remaining;
     }, 1000);
-  }
 
-  overlay.querySelector(".ytmp-close")?.addEventListener("click", () => dismiss(true));
+    continueBtn.addEventListener("click", () => dismiss(true));
+    overlay.querySelector(".ytmp-close").addEventListener("click", finishCountdown);
+  }
   overlay.querySelector(".ytmp-cancel").addEventListener("click", () => {
     dismiss(false);
     window.location.href = "https://www.youtube.com/";

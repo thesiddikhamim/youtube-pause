@@ -190,15 +190,20 @@
       background: rgba(30, 140, 255, 0.12);
       border: 1px solid rgba(124, 197, 255, 0.3);
     }
-    .badge.journal {
-      color: var(--mint);
-      background: rgba(92, 224, 160, 0.1);
-      border: 1px solid rgba(92, 224, 160, 0.3);
+    .badge.tag-study {
+      color: var(--breath);
+      background: rgba(30, 140, 255, 0.12);
+      border: 1px solid rgba(124, 197, 255, 0.3);
     }
-    .badge.flagged {
+    .badge.tag-waste {
       color: var(--rose);
       background: rgba(255, 125, 156, 0.1);
       border: 1px solid rgba(255, 125, 156, 0.3);
+    }
+    .badge.none {
+      color: var(--text-3);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
     }
     .time {
       font-family: var(--font-mono);
@@ -251,15 +256,15 @@
     <div class="stats">
       <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">videos paused on</div></div>
       <div class="stat"><div class="num" id="statJournal">0</div><div class="lbl">written reasons</div></div>
-      <div class="stat"><div class="num" id="statFlagged">0</div><div class="lbl">flagged unimportant</div></div>
+      <div class="stat"><div class="num" id="statFlagged">0</div><div class="lbl">tagged waste</div></div>
     </div>
 
     <div class="toolbar">
       <input class="field search" id="search" type="text" placeholder="Search title or reason..." />
       <div class="segmented" id="filters">
         <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="important">Important</button>
-        <button class="filter-btn" data-filter="flagged">Unimportant</button>
+        <button class="filter-btn" data-filter="study">Study</button>
+        <button class="filter-btn" data-filter="waste">Waste</button>
       </div>
       <button class="clear-btn" id="clearAll">Clear all</button>
     </div>
