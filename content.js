@@ -305,7 +305,7 @@ function startPause() {
     setTimeout(() => {
       overlay.remove();
       overlayActive = false;
-      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("keydown", onKey, true);
     }, 350);
   };
 
@@ -313,6 +313,8 @@ function startPause() {
     if (e.key === "Escape" && settings.mode !== "journal") {
       e.preventDefault();
       finishCountdown && finishCountdown();
+    } else if (e.key === "j" || e.key === "J") {
+      cancel();
     }
   };
 
@@ -357,10 +359,12 @@ function startPause() {
     continueBtn.addEventListener("click", () => dismiss(true));
     overlay.querySelector(".ytmp-close").addEventListener("click", finishCountdown);
   }
-  overlay.querySelector(".ytmp-cancel").addEventListener("click", () => {
+  const cancelBtn = overlay.querySelector(".ytmp-cancel");
+  const cancel = () => {
     dismiss(false);
     window.location.href = "https://www.youtube.com/";
-  });
+  };
+  cancelBtn.addEventListener("click", cancel);
   document.addEventListener("keydown", onKey, true);
 
   document.documentElement.appendChild(overlay);

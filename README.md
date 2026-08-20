@@ -31,6 +31,7 @@ After editing any file, reload the extension at `chrome://extensions` (Ctrl/Cmd+
 During the gate:
 
 - **Esc / ✕** skips the timer countdown only — the tag (and journal) gate always stays.
+- **J** — same as clicking "Actually, I don't need to watch...": dismisses the gate without saving and redirects to `youtube.com`.
 - **"Actually, I don't need to watch..."** is the only way out without saving; it dismisses the overlay and redirects to `youtube.com`.
 
 ## How it works

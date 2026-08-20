@@ -521,6 +521,17 @@ html.ytmp-hide-home ytd-browse[page-subtype="home"] ytd-rich-grid-renderer {
   display: none !important;
 }
 
+/* visibility:hidden (not display:none) so the sidebar keeps its grid track
+   and the player never moves/resizes; the blank column just looks empty. */
 html.ytmp-hide-recs #secondary {
-  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Narrow layout stacks the sidebar below the player — drop it entirely
+   there, the video is already full-width so nothing shifts. */
+@media (max-width: 1000px) {
+  html.ytmp-hide-recs #secondary {
+    visibility: visible;
+    display: none !important;
+  }
 }
