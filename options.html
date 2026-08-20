@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Mindful Pause — Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Roboto, "Segoe UI", Arial, sans-serif;
+      background: #0b0e15;
+      color: #e8eaf0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+    .card {
+      background: #141926;
+      border: 1px solid #232b3d;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 640px;
+    }
+    h1 { font-size: 20px; margin-bottom: 4px; color: #fff; }
+    .sub { color: #8a94a6; font-size: 13.5px; margin-bottom: 26px; }
+    .section-title { font-size: 13px; color: #aeb8c9; margin-bottom: 10px; font-weight: 600; }
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+    .mode-card {
+      background: #0b0e15;
+      border: 1px solid #2a3350;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .mode-card:hover { border-color: #3a4a75; }
+    .mode-card.active { border-color: #1a73e8; background: rgba(26, 115, 232, 0.08); }
+    .mode-card .name { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+    .mode-card .desc { font-size: 12.5px; color: #8a94a6; line-height: 1.5; }
+    .mode-card input { display: none; }
+    label { display: block; font-size: 13px; color: #aeb8c9; margin-bottom: 8px; }
+    textarea, input[type="number"] {
+      width: 100%;
+      background: #0b0e15;
+      border: 1px solid #2a3350;
+      border-radius: 10px;
+      color: #e8eaf0;
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    textarea { min-height: 150px; resize: vertical; }
+    textarea:focus, input:focus { border-color: #1a73e8; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .hidden { display: none; }
+    button {
+      background: #1a73e8;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    button:hover { background: #2f86f7; }
+    button:active { transform: scale(0.98); }
+    .status {
+      display: none;
+      margin-top: 14px;
+      font-size: 13.5px;
+      color: #7ce38b;
+    }
+    .status.show { display: block; }
+    .note { font-size: 12.5px; color: #8a94a6; margin-top: -10px; margin-bottom: 20px; }
+    .history-link {
+      display: block;
+      margin-top: 24px;
+      text-align: center;
+      background: #0b0e15;
+      border: 1px solid #232b3d;
+      color: #8a94a6;
+      text-decoration: none;
+      font-size: 13px;
+      padding: 12px;
+      border-radius: 10px;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .history-link:hover { color: #5aadff; border-color: #1a73e8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>YouTube Mindful Pause</h1>
+    <p class="sub">Choose how the pause works before every video.</p>
+
+    <div class="section-title">Pause mode</div>
+    <div class="mode-grid">
+      <label class="mode-card" id="mode-timer">
+        <input type="radio" name="mode" value="timer" />
+        <div class="name">Timer</div>
+        <div class="desc">Breathing circle with a countdown. Choose a wait time, then watch (or not).</div>
+      </label>
+      <label class="mode-card" id="mode-journal">
+        <input type="radio" name="mode" value="journal" />
+        <div class="name">Journal</div>
+        <div class="desc">Write at least 15 words explaining why this video truly helps you — or admit you're procrastinating.</div>
+      </label>
+    </div>
+
+    <label for="message">Pause message</label>
+    <textarea id="message" placeholder="Type your reminder..."></textarea>
+
+    <div class="row" id="delayRow">
+      <div>
+        <label for="delay">Pause duration (seconds)</label>
+        <input id="delay" type="number" min="1" max="60" />
+      </div>
+      <button id="save">Save</button>
+    </div>
+
+    <p class="note" id="journalNote">In Journal mode, the minimum is always 15 words — you can write more.</p>
+
+    <div class="status" id="status">Saved</div>
+
+    <a class="history-link" href="#" id="history">View watch history</a>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

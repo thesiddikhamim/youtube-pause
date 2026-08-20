@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch History — YouTube Mindful Pause</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Roboto, "Segoe UI", Arial, sans-serif;
+      background: #0b0e15;
+      color: #e8eaf0;
+      min-height: 100vh;
+      padding: 40px 24px 80px;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 24px; color: #fff; margin-bottom: 6px; }
+    .sub { color: #8a94a6; font-size: 14px; margin-bottom: 24px; }
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: #141926;
+      border: 1px solid #232b3d;
+      border-radius: 12px;
+      padding: 12px 18px;
+      min-width: 140px;
+    }
+    .stat .num { font-size: 22px; font-weight: 700; color: #5aadff; }
+    .stat .lbl { font-size: 12px; color: #8a94a6; margin-top: 2px; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .search {
+      flex: 1;
+      min-width: 200px;
+      background: #141926;
+      border: 1px solid #232b3d;
+      border-radius: 10px;
+      color: #e8eaf0;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .search:focus { border-color: #1a73e8; }
+    .filter-btn {
+      background: #141926;
+      border: 1px solid #232b3d;
+      color: #8a94a6;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-btn:hover { color: #c8d0dd; }
+    .filter-btn.active { border-color: #1a73e8; color: #5aadff; background: rgba(26, 115, 232, 0.1); }
+    .clear-btn {
+      margin-left: auto;
+      background: transparent;
+      border: 1px solid #5c1f2b;
+      color: #e07a8a;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .clear-btn:hover { background: rgba(224, 36, 94, 0.1); }
+    .empty {
+      text-align: center;
+      color: #8a94a6;
+      font-size: 15px;
+      padding: 60px 20px;
+      border: 1px dashed #232b3d;
+      border-radius: 14px;
+    }
+    .card {
+      display: flex;
+      gap: 14px;
+      background: #141926;
+      border: 1px solid #232b3d;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: border-color 0.15s ease;
+    }
+    .card:hover { border-color: #3a4a75; }
+    .thumb {
+      width: 168px;
+      height: 94px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #0b0e15;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .body { flex: 1; min-width: 0; }
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      margin-bottom: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .title:hover { color: #5aadff; }
+    .channel { font-size: 12.5px; color: #8a94a6; margin-bottom: 8px; }
+    .reason {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #c8d0dd;
+      background: #0b0e15;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      white-space: pre-wrap;
+      max-height: 96px;
+      overflow: auto;
+    }
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.3px;
+    }
+    .badge.timer { background: rgba(26, 115, 232, 0.15); color: #5aadff; }
+    .badge.journal { background: rgba(52, 168, 83, 0.15); color: #7ce38b; }
+    .badge.flagged { background: rgba(224, 36, 94, 0.18); color: #ff7d9c; }
+    .time { font-size: 12px; color: #8a94a6; }
+    .del {
+      align-self: flex-start;
+      background: transparent;
+      border: none;
+      color: #5c6678;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+    .del:hover { color: #ff7d9c; background: rgba(224, 36, 94, 0.1); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Watch History</h1>
+    <p class="sub">Every video you paused on, with your reasons.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">videos paused on</div></div>
+      <div class="stat"><div class="num" id="statJournal">0</div><div class="lbl">with written reasons</div></div>
+      <div class="stat"><div class="num" id="statFlagged">0</div><div class="lbl">flagged unimportant</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input class="search" id="search" type="text" placeholder="Search title or reason..." />
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="important">Important</button>
+      <button class="filter-btn" data-filter="flagged">Unimportant</button>
+      <button class="clear-btn" id="clearAll">Clear all</button>
+    </div>
+
+    <div id="list"></div>
+  </div>
+
+  <script src="history.js"></script>
+</body>
+</html>
