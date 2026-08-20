@@ -245,7 +245,10 @@ function startPause() {
   }
 
   overlay.querySelector(".ytmp-close")?.addEventListener("click", () => dismiss(true));
-  overlay.querySelector(".ytmp-cancel").addEventListener("click", () => dismiss(false));
+  overlay.querySelector(".ytmp-cancel").addEventListener("click", () => {
+    dismiss(false);
+    window.location.href = "https://www.youtube.com/";
+  });
   document.addEventListener("keydown", onKey, true);
 
   document.documentElement.appendChild(overlay);
