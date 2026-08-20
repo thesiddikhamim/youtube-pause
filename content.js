@@ -8,6 +8,8 @@ const DEFAULT_SETTINGS = {
   delaySeconds: 10,
 };
 
+const VERSION = "1.2.0";
+
 let settings = { ...DEFAULT_SETTINGS };
 let overlayActive = false;
 let processedVideoId = null;
@@ -79,40 +81,40 @@ function freezeAllVideos() {
   document.querySelectorAll("video").forEach(freezeVideo);
 }
 
-function saveHistory(entry) {
-  const { title, channel } = getVideoMeta();
+function saveHistory(entry, videoId, meta) {
+  const vid = videoId || getVideoId() || `unknown-${Date.now()}`;
+  const { title, channel } = meta || getVideoMeta();
   const record = {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
-    videoId: getVideoId(),
+    videoId: vid,
     title,
     channel,
-    thumbnail: `https://i.ytimg.com/vi/${getVideoId()}/hqdefault.jpg`,
+    thumbnail: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,
     timestamp: Date.now(),
     ...entry,
   };
   chrome.storage.local.get({ history: [] }, (data) => {
     const history = data.history || [];
     history.push(record);
-    chrome.storage.local.set({ history });
+    chrome.storage.local.set({ history }, () => {
+      console.log("[MindfulPause] Saved history entry:", record);
+    });
   });
 }
 
 function buildOverlay() {
   const overlay = document.createElement("div");
   overlay.className = "ytmp-overlay";
+  overlay.classList.add(settings.mode === "journal" ? "ytmp-journal-mode" : "ytmp-timer-mode");
 
+  const modeBadge = `<div class="ytmp-mode-badge">${
+    settings.mode === "journal" ? "JOURNAL MODE" : "TIMER MODE"
+  }</div>`;
   const closeBtn = `<button class="ytmp-close" title="Skip the wait (Esc)" aria-label="Skip the wait">✕</button>`;
 
   if (settings.mode === "journal") {
     overlay.innerHTML = `
-      ${closeBtn}
-      <div class="ytmp-circle" aria-hidden="true">
-        <div class="ytmp-core"></div>
-        <div class="ytmp-ring"></div>
-        <div class="ytmp-ring"></div>
-        <div class="ytmp-ring"></div>
-        <span class="ytmp-count ytmp-count-goal">${MIN_WORDS}</span>
-      </div>
+      ${modeBadge}
       <p class="ytmp-message"></p>
       <textarea class="ytmp-journal" rows="5"
         placeholder="In at least ${MIN_WORDS} words, explain why this video truly helps you right now, how you'll use it, or be honest that you're just procrastinating..."></textarea>
@@ -121,6 +123,7 @@ function buildOverlay() {
         <input type="checkbox" class="ytmp-flag-check" />
         <span>This is unimportant / I'm just wasting time</span>
       </label>
+      <div class="ytmp-saved">Saved to history ✓</div>
       <div class="ytmp-actions">
         <button class="ytmp-continue" disabled>Continue</button>
         <button class="ytmp-cancel">Actually, I don't need to watch this right now</button>
@@ -128,6 +131,7 @@ function buildOverlay() {
     `;
   } else {
     overlay.innerHTML = `
+      ${modeBadge}
       ${closeBtn}
       <div class="ytmp-circle" aria-hidden="true">
         <div class="ytmp-core"></div>
@@ -141,12 +145,26 @@ function buildOverlay() {
         <input type="checkbox" class="ytmp-flag-check" />
         <span>This is unimportant / I'm just wasting time</span>
       </label>
+      <div class="ytmp-saved">Saved to history ✓</div>
       <button class="ytmp-cancel">Actually, I don't need to watch this right now</button>
     `;
   }
 
   overlay.querySelector(".ytmp-message").textContent = settings.message;
   return overlay;
+}
+
+function getMetaWithRetry(cb, attempts = 30) {
+  const meta = getVideoMeta();
+  if (meta.title !== "Untitled video" && meta.channel) {
+    cb(meta);
+    return;
+  }
+  if (attempts <= 0) {
+    cb(meta);
+    return;
+  }
+  setTimeout(() => getMetaWithRetry(cb, attempts - 1), 100);
 }
 
 function startPause() {
@@ -164,17 +182,22 @@ function startPause() {
   observer.observe(document.documentElement, { childList: true, subtree: true });
 
   const flagCheck = overlay.querySelector(".ytmp-flag-check");
+  const savedEl = overlay.querySelector(".ytmp-saved");
 
   const dismiss = (shouldSave) => {
     clearInterval(timer);
     observer.disconnect();
     overlay.classList.add("ytmp-done");
     if (shouldSave) {
-      saveHistory({
-        mode: settings.mode,
-        reason: overlay.querySelector(".ytmp-journal")?.value?.trim() || null,
-        flagged: flagCheck?.checked || false,
-      });
+      const reason = overlay.querySelector(".ytmp-journal")?.value?.trim() || null;
+      const flagged = flagCheck?.checked || false;
+      getMetaWithRetry((meta) =>
+        saveHistory({ mode: settings.mode, reason, flagged }, videoId, meta)
+      );
+      if (savedEl) {
+        savedEl.classList.add("show");
+        setTimeout(() => savedEl.classList.remove("show"), 1600);
+      }
     }
     setTimeout(() => {
       overlay.remove();
@@ -184,7 +207,7 @@ function startPause() {
   };
 
   const onKey = (e) => {
-    if (e.key === "Escape") {
+    if (e.key === "Escape" && settings.mode !== "journal") {
       e.preventDefault();
       dismiss(true);
     }
@@ -221,7 +244,7 @@ function startPause() {
     }, 1000);
   }
 
-  overlay.querySelector(".ytmp-close").addEventListener("click", () => dismiss(true));
+  overlay.querySelector(".ytmp-close")?.addEventListener("click", () => dismiss(true));
   overlay.querySelector(".ytmp-cancel").addEventListener("click", () => dismiss(false));
   document.addEventListener("keydown", onKey, true);
 
@@ -257,3 +280,4 @@ window.addEventListener("load", onNavigate);
 
 loadSettings();
 onNavigate();
+console.log(`[MindfulPause] v${VERSION} loaded, mode: ${settings.mode}`);

@@ -36,7 +36,14 @@ function setMode(mode) {
 }
 
 for (const key of Object.keys(modeCards)) {
-  modeCards[key].addEventListener("click", () => setMode(key));
+  modeCards[key].addEventListener("click", () => {
+    setMode(key);
+    chrome.storage.sync.set({ mode: key }, () => {
+      statusEl.textContent = "Mode saved — applies to YouTube immediately";
+      statusEl.classList.add("show");
+      setTimeout(() => statusEl.classList.remove("show"), 2000);
+    });
+  });
 }
 
 saveBtn.addEventListener("click", () => {

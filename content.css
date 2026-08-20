@@ -141,6 +141,31 @@
   white-space: pre-line;
 }
 
+.ytmp-mode-badge {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 5px 14px;
+  border-radius: 14px;
+  text-transform: uppercase;
+}
+
+.ytmp-timer-mode .ytmp-mode-badge {
+  color: #5aadff;
+  background: rgba(26, 115, 232, 0.15);
+  border: 1px solid rgba(26, 115, 232, 0.4);
+}
+
+.ytmp-journal-mode .ytmp-mode-badge {
+  color: #7ce38b;
+  background: rgba(52, 168, 83, 0.15);
+  border: 1px solid rgba(52, 168, 83, 0.4);
+}
+
 .ytmp-close {
   position: absolute;
   top: 22px;
@@ -204,7 +229,8 @@
 }
 
 .ytmp-count-goal {
-  font-size: 42px;
+  font-size: 40px;
+  text-shadow: 0 2px 14px rgba(0, 20, 60, 0.6);
 }
 
 .ytmp-journal {
@@ -297,4 +323,20 @@
 .ytmp-continue:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.ytmp-saved {
+  display: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #7ce38b;
+  background: rgba(52, 168, 83, 0.12);
+  border: 1px solid rgba(52, 168, 83, 0.35);
+  padding: 8px 18px;
+  border-radius: 20px;
+}
+
+.ytmp-saved.show {
+  display: block;
+  animation: ytmp-fade-in 0.2s ease-out;
 }

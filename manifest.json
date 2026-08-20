@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YouTube Mindful Pause",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A mindful 10-second pause with a breathing blue circle before every YouTube video. Think before you binge.",
   "permissions": ["storage"],
   "content_scripts": [

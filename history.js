@@ -14,6 +14,10 @@ function load() {
   });
 }
 
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.history) load();
+});
+
 function renderStats() {
   document.getElementById("statTotal").textContent = history.length;
   document.getElementById("statJournal").textContent = history.filter(

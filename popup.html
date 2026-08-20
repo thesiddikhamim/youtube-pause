@@ -40,6 +40,18 @@
       margin-bottom: 12px;
     }
     .switch-row .label { font-size: 13.5px; }
+    .switch-row select {
+      background: #0b0e15;
+      border: 1px solid #2a3350;
+      color: #e8eaf0;
+      font-family: inherit;
+      font-size: 12.5px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+    }
+    .switch-row select:focus { border-color: #1a73e8; }
     .switch { position: relative; width: 42px; height: 24px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
@@ -93,6 +105,14 @@
       <input type="checkbox" id="toggle" />
       <span class="slider"></span>
     </label>
+  </div>
+
+  <div class="switch-row">
+    <label class="label" for="mode">Mode</label>
+    <select id="mode">
+      <option value="timer">Timer (10s pause)</option>
+      <option value="journal">Journal (15 words)</option>
+    </select>
   </div>
 
   <a class="link" href="#" id="options">Edit pause message &amp; mode</a>
