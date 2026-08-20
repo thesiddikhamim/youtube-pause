@@ -6,9 +6,12 @@ const DEFAULT_SETTINGS = {
   message:
     "Please Hamim Don't Lie to Yourself. Is it really important to watch or you are just procrastinating. You can get more values if you read books or any courses",
   delaySeconds: 10,
+  hideRecommendations: false,
+  hideShorts: false,
+  hideHome: false,
 };
 
-const VERSION = "1.2.0";
+const VERSION = "1.4.0";
 
 let settings = { ...DEFAULT_SETTINGS };
 let overlayActive = false;
@@ -18,6 +21,7 @@ let lastNavUrl = null;
 function loadSettings() {
   chrome.storage.sync.get(DEFAULT_SETTINGS, (stored) => {
     settings = { ...DEFAULT_SETTINGS, ...stored };
+    hideDistractions();
   });
 }
 
@@ -44,6 +48,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   for (const key of Object.keys(DEFAULT_SETTINGS)) {
     if (changes[key]) settings[key] = changes[key].newValue;
   }
+  hideDistractions();
 });
 
 function getVideoId() {
@@ -97,6 +102,55 @@ function freezeVideo(video) {
 
 function freezeAllVideos() {
   document.querySelectorAll("video").forEach(freezeVideo);
+}
+
+function hideDistractions() {
+  const hide = (el) => {
+    if (!el) return;
+    el.dataset.ytmpHidden = "1";
+    el.classList.add("ytmp-hidden-el");
+  };
+  const show = (el) => {
+    if (!el) return;
+    delete el.dataset.ytmpHidden;
+    el.classList.remove("ytmp-hidden-el");
+  };
+
+  const shortsTargets = document.querySelectorAll(
+    "ytd-reel-shelf-renderer, ytd-rich-shelf-renderer[is-shorts], ytd-rich-item-renderer[is-shorts], ytd-shorts-lockup-view-model"
+  );
+  const guideTargets = document.querySelectorAll(
+    "ytd-guide-entry-renderer a, ytd-mini-guide-entry-renderer a"
+  );
+  if (settings.hideShorts) {
+    shortsTargets.forEach((el) => hide(el.closest("ytd-rich-item-renderer") || el));
+    guideTargets.forEach((a) => {
+      const title = (a.getAttribute("title") || a.textContent || "").trim();
+      if (/^shorts$/i.test(title)) hide(a.closest("ytd-guide-entry-renderer, ytd-mini-guide-entry-renderer"));
+    });
+  } else {
+    shortsTargets.forEach((el) => show(el.closest("ytd-rich-item-renderer") || el));
+    guideTargets.forEach((a) => {
+      const title = (a.getAttribute("title") || a.textContent || "").trim();
+      if (/^shorts$/i.test(title)) show(a.closest("ytd-guide-entry-renderer, ytd-mini-guide-entry-renderer"));
+    });
+  }
+
+  const secondary = document.getElementById("secondary");
+  if (settings.hideRecommendations) {
+    if (secondary) hide(secondary);
+  } else if (secondary) {
+    show(secondary);
+  }
+
+  const homeGrids = document.querySelectorAll(
+    'ytd-browse[page-subtype="home"] ytd-rich-grid-renderer'
+  );
+  if (settings.hideHome) {
+    homeGrids.forEach(hide);
+  } else {
+    homeGrids.forEach(show);
+  }
 }
 
 function saveHistory(entry, videoId, meta) {
@@ -350,4 +404,10 @@ window.addEventListener("load", onNavigate);
 
 loadSettings();
 onNavigate();
+let hideTimer = null;
+const distractionObserver = new MutationObserver(() => {
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(hideDistractions, 150);
+});
+distractionObserver.observe(document.documentElement, { childList: true, subtree: true });
 console.log(`[MindfulPause] v${VERSION} loaded, mode: ${settings.mode}`);

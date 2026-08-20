@@ -12,13 +12,26 @@ const modeCards = {
   timer: document.getElementById("mode-timer"),
   journal: document.getElementById("mode-journal"),
 };
+const hideRecsEl = document.getElementById("hideRecommendations");
+const hideShortsEl = document.getElementById("hideShorts");
+const hideHomeEl = document.getElementById("hideHome");
 
 chrome.storage.sync.get(
-  { message: DEFAULT_MESSAGE, delaySeconds: 10, mode: "timer" },
+  {
+    message: DEFAULT_MESSAGE,
+    delaySeconds: 10,
+    mode: "timer",
+    hideRecommendations: false,
+    hideShorts: false,
+    hideHome: false,
+  },
   (stored) => {
     messageEl.value = stored.message;
     delayEl.value = stored.delaySeconds;
     setMode(stored.mode);
+    hideRecsEl.checked = stored.hideRecommendations;
+    hideShortsEl.checked = stored.hideShorts;
+    hideHomeEl.checked = stored.hideHome;
   }
 );
 
@@ -54,10 +67,20 @@ saveBtn.addEventListener("click", () => {
   );
   const mode = document.querySelector('input[name="mode"]:checked').value;
 
-  chrome.storage.sync.set({ message, delaySeconds, mode }, () => {
-    statusEl.classList.add("show");
-    setTimeout(() => statusEl.classList.remove("show"), 1800);
-  });
+  chrome.storage.sync.set(
+    {
+      message,
+      delaySeconds,
+      mode,
+      hideRecommendations: hideRecsEl.checked,
+      hideShorts: hideShortsEl.checked,
+      hideHome: hideHomeEl.checked,
+    },
+    () => {
+      statusEl.classList.add("show");
+      setTimeout(() => statusEl.classList.remove("show"), 1800);
+    }
+  );
 });
 
 historyLink.addEventListener("click", (e) => {
