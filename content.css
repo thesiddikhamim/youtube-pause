@@ -215,22 +215,64 @@
   cursor: pointer;
   user-select: none;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 999px;
-  padding: 10px 18px;
+  padding: 9px 18px;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .ytmp-flag:hover {
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #c3c9d4;
 }
 
 .ytmp-flag input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #ff7d9c;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
   cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ytmp-flag input[type="checkbox"]:hover {
+  border-color: rgba(255, 125, 156, 0.55);
+}
+
+.ytmp-flag input[type="checkbox"]:checked {
+  background: #ff7d9c;
+  border-color: #ff7d9c;
+  box-shadow: 0 0 12px rgba(255, 125, 156, 0.45);
+}
+
+.ytmp-flag input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1.5px;
+  width: 4.5px;
+  height: 9px;
+  border: solid #26060f;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.ytmp-flag input[type="checkbox"]:focus-visible {
+  outline: 1px solid #7cc5ff;
+  outline-offset: 2px;
+}
+
+.ytmp-flag:has(input:checked) {
+  border-color: rgba(255, 125, 156, 0.45);
+  background: rgba(255, 125, 156, 0.08);
+  color: #ffb3c2;
 }
 
 /* ── Journal ────────────────────────────────────────────── */
@@ -291,44 +333,71 @@
 
 /* ── Buttons ────────────────────────────────────────────── */
 .ytmp-continue {
-  background: #7cc5ff;
-  color: #000;
-  border: none;
+  background: linear-gradient(180deg, #8ed0ff 0%, #4da9ff 100%);
+  color: #04121f;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 999px;
-  padding: 12px 34px;
+  padding: 12px 36px;
   font-size: 15px;
   font-weight: 600;
+  letter-spacing: 0.2px;
   font-family: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
   cursor: pointer;
-  transition: background 0.15s ease, opacity 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow:
+    0 2px 14px rgba(46, 141, 255, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
 .ytmp-continue:hover:not(:disabled) {
-  background: #a8dcff;
-  transform: scale(1.03);
-  box-shadow: 0 0 30px rgba(124, 197, 255, 0.35);
+  background: linear-gradient(180deg, #a8dcff 0%, #6fc0ff 100%);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 5px 26px rgba(46, 141, 255, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.ytmp-continue:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .ytmp-continue:disabled {
   opacity: 0.35;
   cursor: not-allowed;
+  filter: saturate(0.5);
+  box-shadow: none;
+}
+
+.ytmp-continue:focus-visible {
+  outline: 1px solid #a8dcff;
+  outline-offset: 3px;
 }
 
 .ytmp-cancel {
-  background: transparent;
-  border: none;
-  color: #565e6b;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #9aa1ae;
   font-size: 13.5px;
   font-family: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
   cursor: pointer;
-  padding: 7px 14px;
-  border-radius: 8px;
-  transition: color 0.15s ease, background 0.15s ease;
+  padding: 10px 22px;
+  border-radius: 999px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .ytmp-cancel:hover {
-  color: #9aa1ae;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #f2f4f8;
+}
+
+.ytmp-cancel:active {
+  transform: scale(0.98);
+}
+
+.ytmp-cancel:focus-visible {
+  outline: 1px solid #7cc5ff;
+  outline-offset: 3px;
 }
 
 .ytmp-saved {
