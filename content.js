@@ -11,21 +11,47 @@ const DEFAULT_SETTINGS = {
   hideHome: false,
 };
 
-const VERSION = "1.4.0";
+const VERSION = "1.5.0";
+
+const HIDE_CLASSES = {
+  hideShorts: "ytmp-hide-shorts",
+  hideHome: "ytmp-hide-home",
+  hideRecommendations: "ytmp-hide-recs",
+};
 
 let settings = { ...DEFAULT_SETTINGS };
 let overlayActive = false;
 let processedVideoId = null;
 let lastNavUrl = null;
 
+// True while this script's extension context is alive. After the extension is
+// reloaded, scripts already injected into open tabs lose their chrome.*
+// bindings and every call throws "Extension context invalidated" — guard all
+// chrome API touchpoints so orphaned instances exit quietly instead.
+function extAlive() {
+  try {
+    return chrome.runtime?.id !== undefined;
+  } catch {
+    return false;
+  }
+}
+
+// Hide-first: activate every hiding class before first paint. The CSS in
+// content.css is injected at document_start, so these rules are live before
+// YouTube renders anything. The storage read below removes the classes for
+// disabled features — YouTube hasn't painted yet, so nothing ever flashes.
+document.documentElement.classList.add(...Object.values(HIDE_CLASSES));
+
 function loadSettings() {
+  if (!extAlive()) return;
   chrome.storage.sync.get(DEFAULT_SETTINGS, (stored) => {
     settings = { ...DEFAULT_SETTINGS, ...stored };
-    hideDistractions();
+    applyDistractionClasses();
   });
 }
 
 function injectOverlayFonts() {
+  if (!extAlive()) return;
   const url = (file) => chrome.runtime.getURL(`fonts/${file}`);
   const faces = [
     `@font-face{font-family:"Fraunces";font-style:normal;font-weight:100 900;src:url("${url("fraunces-variable.woff2")}") format("woff2")}`,
@@ -44,11 +70,11 @@ function injectOverlayFonts() {
 injectOverlayFonts();
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area !== "sync") return;
+  if (!extAlive() || area !== "sync") return;
   for (const key of Object.keys(DEFAULT_SETTINGS)) {
     if (changes[key]) settings[key] = changes[key].newValue;
   }
-  hideDistractions();
+  applyDistractionClasses();
 });
 
 function getVideoId() {
@@ -104,56 +130,15 @@ function freezeAllVideos() {
   document.querySelectorAll("video").forEach(freezeVideo);
 }
 
-function hideDistractions() {
-  const hide = (el) => {
-    if (!el) return;
-    el.dataset.ytmpHidden = "1";
-    el.classList.add("ytmp-hidden-el");
-  };
-  const show = (el) => {
-    if (!el) return;
-    delete el.dataset.ytmpHidden;
-    el.classList.remove("ytmp-hidden-el");
-  };
-
-  const shortsTargets = document.querySelectorAll(
-    "ytd-reel-shelf-renderer, ytd-rich-shelf-renderer[is-shorts], ytd-rich-item-renderer[is-shorts], ytd-shorts-lockup-view-model"
-  );
-  const guideTargets = document.querySelectorAll(
-    "ytd-guide-entry-renderer a, ytd-mini-guide-entry-renderer a"
-  );
-  if (settings.hideShorts) {
-    shortsTargets.forEach((el) => hide(el.closest("ytd-rich-item-renderer") || el));
-    guideTargets.forEach((a) => {
-      const title = (a.getAttribute("title") || a.textContent || "").trim();
-      if (/^shorts$/i.test(title)) hide(a.closest("ytd-guide-entry-renderer, ytd-mini-guide-entry-renderer"));
-    });
-  } else {
-    shortsTargets.forEach((el) => show(el.closest("ytd-rich-item-renderer") || el));
-    guideTargets.forEach((a) => {
-      const title = (a.getAttribute("title") || a.textContent || "").trim();
-      if (/^shorts$/i.test(title)) show(a.closest("ytd-guide-entry-renderer, ytd-mini-guide-entry-renderer"));
-    });
-  }
-
-  const secondary = document.getElementById("secondary");
-  if (settings.hideRecommendations) {
-    if (secondary) hide(secondary);
-  } else if (secondary) {
-    show(secondary);
-  }
-
-  const homeGrids = document.querySelectorAll(
-    'ytd-browse[page-subtype="home"] ytd-rich-grid-renderer'
-  );
-  if (settings.hideHome) {
-    homeGrids.forEach(hide);
-  } else {
-    homeGrids.forEach(show);
+function applyDistractionClasses() {
+  const root = document.documentElement;
+  for (const [key, cls] of Object.entries(HIDE_CLASSES)) {
+    root.classList.toggle(cls, !!settings[key]);
   }
 }
 
 function saveHistory(entry, videoId, meta) {
+  if (!extAlive()) return;
   const vid = videoId || getVideoId() || `unknown-${Date.now()}`;
   const { title, channel } = meta || getVideoMeta();
   const record = {
@@ -261,7 +246,13 @@ function startPause() {
 
   const overlay = buildOverlay();
 
-  const observer = new MutationObserver(() => freezeAllVideos());
+  const observer = new MutationObserver(() => {
+    try {
+      freezeAllVideos();
+    } catch {
+      // Extension context invalidated (extension reloaded) — bail quietly.
+    }
+  });
   observer.observe(document.documentElement, { childList: true, subtree: true });
 
   const tagButtons = overlay.querySelectorAll(".ytmp-tag");
@@ -404,10 +395,4 @@ window.addEventListener("load", onNavigate);
 
 loadSettings();
 onNavigate();
-let hideTimer = null;
-const distractionObserver = new MutationObserver(() => {
-  clearTimeout(hideTimer);
-  hideTimer = setTimeout(hideDistractions, 150);
-});
-distractionObserver.observe(document.documentElement, { childList: true, subtree: true });
 console.log(`[MindfulPause] v${VERSION} loaded, mode: ${settings.mode}`);

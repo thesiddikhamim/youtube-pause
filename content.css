@@ -501,7 +501,26 @@
     transition: none;
   }
 }
-/* ── Distraction hiding ─────────────────────────────────── */
-.ytmp-hidden-el {
+/* ── Distraction hiding (no-flash) ────────────────────────
+   content.css is injected at document_start, so these rules exist before
+   YouTube renders anything. content.js adds all three classes to <html>
+   at document_start (hide-first), then removes the classes for disabled
+   features once settings load — YouTube still hasn't painted, so there is
+   never a visible flash of shorts/home/recommendations. Dynamic elements
+   (infinite scroll) are covered natively: CSS applies to new nodes. */
+html.ytmp-hide-shorts ytd-reel-shelf-renderer,
+html.ytmp-hide-shorts ytd-rich-shelf-renderer[is-shorts],
+html.ytmp-hide-shorts ytd-rich-item-renderer[is-shorts],
+html.ytmp-hide-shorts ytd-shorts-lockup-view-model,
+html.ytmp-hide-shorts ytd-guide-entry-renderer:has(a[title="Shorts"], a[aria-label="Shorts"]),
+html.ytmp-hide-shorts ytd-mini-guide-entry-renderer:has(a[title="Shorts"], a[aria-label="Shorts"]) {
+  display: none !important;
+}
+
+html.ytmp-hide-home ytd-browse[page-subtype="home"] ytd-rich-grid-renderer {
+  display: none !important;
+}
+
+html.ytmp-hide-recs #secondary {
   display: none !important;
 }
