@@ -4,6 +4,12 @@
   "version": "1.2.0",
   "description": "A mindful 10-second pause with a breathing blue circle before every YouTube video. Think before you binge.",
   "permissions": ["storage"],
+  "web_accessible_resources": [
+    {
+      "resources": ["fonts/*.woff2"],
+      "matches": ["https://www.youtube.com/*"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],

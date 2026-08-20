@@ -4,128 +4,166 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Watch History — YouTube Mindful Pause</title>
+  <link rel="stylesheet" href="ui.css" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Roboto, "Segoe UI", Arial, sans-serif;
-      background: #0b0e15;
-      color: #e8eaf0;
       min-height: 100vh;
-      padding: 40px 24px 80px;
+      padding: 56px 24px 96px;
     }
-    .wrap { max-width: 900px; margin: 0 auto; }
-    h1 { font-size: 24px; color: #fff; margin-bottom: 6px; }
-    .sub { color: #8a94a6; font-size: 14px; margin-bottom: 24px; }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 34px;
+    }
+    h1.display {
+      font-size: 34px;
+      letter-spacing: 0.2px;
+    }
+    .sub {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--text-3);
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+    }
+
     .stats {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 28px;
+      background: var(--surface);
     }
     .stat {
-      background: #141926;
-      border: 1px solid #232b3d;
-      border-radius: 12px;
-      padding: 12px 18px;
-      min-width: 140px;
+      padding: 18px 20px;
     }
-    .stat .num { font-size: 22px; font-weight: 700; color: #5aadff; }
-    .stat .lbl { font-size: 12px; color: #8a94a6; margin-top: 2px; }
+    .stat + .stat {
+      border-left: 1px solid var(--line);
+    }
+    .stat .num {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 28px;
+      font-variation-settings: "opsz" 100, "SOFT" 100;
+      color: var(--text);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat .lbl {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-top: 6px;
+    }
+
     .toolbar {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
       flex-wrap: wrap;
     }
     .search {
       flex: 1;
       min-width: 200px;
-      background: #141926;
-      border: 1px solid #232b3d;
-      border-radius: 10px;
-      color: #e8eaf0;
-      font-family: inherit;
-      font-size: 14px;
-      padding: 10px 14px;
-      outline: none;
-      transition: border-color 0.15s ease;
     }
-    .search:focus { border-color: #1a73e8; }
-    .filter-btn {
-      background: #141926;
-      border: 1px solid #232b3d;
-      color: #8a94a6;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.15s ease;
+    .segmented .filter-btn {
+      flex: 0 1 auto;
     }
-    .filter-btn:hover { color: #c8d0dd; }
-    .filter-btn.active { border-color: #1a73e8; color: #5aadff; background: rgba(26, 115, 232, 0.1); }
     .clear-btn {
       margin-left: auto;
       background: transparent;
-      border: 1px solid #5c1f2b;
-      color: #e07a8a;
-      border-radius: 10px;
-      padding: 8px 14px;
-      font-size: 13px;
+      border: 1px solid rgba(255, 125, 156, 0.3);
+      color: var(--rose);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 12.5px;
+      font-weight: 500;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.15s ease;
     }
-    .clear-btn:hover { background: rgba(224, 36, 94, 0.1); }
+    .clear-btn:hover {
+      background: rgba(255, 125, 156, 0.1);
+    }
+
     .empty {
       text-align: center;
-      color: #8a94a6;
-      font-size: 15px;
-      padding: 60px 20px;
-      border: 1px dashed #232b3d;
+      color: var(--text-3);
+      font-size: 14px;
+      line-height: 1.7;
+      padding: 64px 24px;
+      border: 1px dashed var(--line-strong);
       border-radius: 14px;
     }
+
     .card {
       display: flex;
-      gap: 14px;
-      background: #141926;
-      border: 1px solid #232b3d;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
       border-radius: 14px;
       padding: 14px;
       margin-bottom: 12px;
-      transition: border-color 0.15s ease;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
-    .card:hover { border-color: #3a4a75; }
+    .card:hover {
+      border-color: var(--line-strong);
+      background: var(--surface-2);
+    }
     .thumb {
       width: 168px;
       height: 94px;
-      border-radius: 8px;
+      border-radius: 9px;
       object-fit: cover;
-      background: #0b0e15;
+      background: #000;
+      border: 1px solid var(--line);
       flex-shrink: 0;
       cursor: pointer;
+      transition: border-color 0.15s ease;
     }
-    .body { flex: 1; min-width: 0; }
+    .thumb:hover {
+      border-color: rgba(124, 197, 255, 0.4);
+    }
+    .body {
+      flex: 1;
+      min-width: 0;
+    }
     .title {
       font-size: 15px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text);
       cursor: pointer;
       margin-bottom: 3px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .title:hover { color: #5aadff; }
-    .channel { font-size: 12.5px; color: #8a94a6; margin-bottom: 8px; }
+    .title:hover {
+      color: var(--breath);
+    }
+    .channel {
+      font-size: 12.5px;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
     .reason {
       font-size: 13.5px;
-      line-height: 1.55;
-      color: #c8d0dd;
-      background: #0b0e15;
-      border-radius: 8px;
-      padding: 8px 12px;
+      line-height: 1.6;
+      color: var(--text-2);
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-left: 2px solid rgba(124, 197, 255, 0.5);
+      border-radius: 9px;
+      padding: 9px 13px;
       margin-top: 6px;
       white-space: pre-wrap;
       max-height: 96px;
@@ -134,51 +172,95 @@
     .meta {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-top: 8px;
+      margin-top: 9px;
     }
     .badge {
-      font-size: 11px;
-      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       padding: 3px 10px;
-      border-radius: 12px;
-      letter-spacing: 0.3px;
+      border-radius: 999px;
     }
-    .badge.timer { background: rgba(26, 115, 232, 0.15); color: #5aadff; }
-    .badge.journal { background: rgba(52, 168, 83, 0.15); color: #7ce38b; }
-    .badge.flagged { background: rgba(224, 36, 94, 0.18); color: #ff7d9c; }
-    .time { font-size: 12px; color: #8a94a6; }
+    .badge.timer {
+      color: var(--breath);
+      background: rgba(30, 140, 255, 0.12);
+      border: 1px solid rgba(124, 197, 255, 0.3);
+    }
+    .badge.journal {
+      color: var(--mint);
+      background: rgba(92, 224, 160, 0.1);
+      border: 1px solid rgba(92, 224, 160, 0.3);
+    }
+    .badge.flagged {
+      color: var(--rose);
+      background: rgba(255, 125, 156, 0.1);
+      border: 1px solid rgba(255, 125, 156, 0.3);
+    }
+    .time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      margin-left: auto;
+    }
     .del {
       align-self: flex-start;
       background: transparent;
       border: none;
-      color: #5c6678;
+      color: var(--text-3);
       font-size: 15px;
       cursor: pointer;
       padding: 4px 8px;
       border-radius: 6px;
+      line-height: 1;
       transition: color 0.15s ease, background 0.15s ease;
     }
-    .del:hover { color: #ff7d9c; background: rgba(224, 36, 94, 0.1); }
+    .del:hover {
+      color: var(--rose);
+      background: rgba(255, 125, 156, 0.1);
+    }
+
+    @media (max-width: 560px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+      .stat + .stat {
+        border-left: none;
+        border-top: 1px solid var(--line);
+      }
+      .thumb {
+        width: 120px;
+        height: 68px;
+      }
+      .card {
+        gap: 12px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Watch History</h1>
-    <p class="sub">Every video you paused on, with your reasons.</p>
+  <div class="page">
+    <div class="header">
+      <h1 class="display">Watch history</h1>
+      <p class="sub">Every video you paused on, with your reasons.</p>
+    </div>
 
     <div class="stats">
       <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">videos paused on</div></div>
-      <div class="stat"><div class="num" id="statJournal">0</div><div class="lbl">with written reasons</div></div>
+      <div class="stat"><div class="num" id="statJournal">0</div><div class="lbl">written reasons</div></div>
       <div class="stat"><div class="num" id="statFlagged">0</div><div class="lbl">flagged unimportant</div></div>
     </div>
 
     <div class="toolbar">
-      <input class="search" id="search" type="text" placeholder="Search title or reason..." />
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="important">Important</button>
-      <button class="filter-btn" data-filter="flagged">Unimportant</button>
+      <input class="field search" id="search" type="text" placeholder="Search title or reason..." />
+      <div class="segmented" id="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="important">Important</button>
+        <button class="filter-btn" data-filter="flagged">Unimportant</button>
+      </div>
       <button class="clear-btn" id="clearAll">Clear all</button>
     </div>
 

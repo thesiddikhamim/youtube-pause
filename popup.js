@@ -1,20 +1,30 @@
 const toggle = document.getElementById("toggle");
-const modeSelect = document.getElementById("mode");
+const modeSegmented = document.getElementById("mode");
+const modeButtons = modeSegmented.querySelectorAll("button[data-mode]");
 const optionsLink = document.getElementById("options");
 const historyLink = document.getElementById("history");
 
+function setMode(mode) {
+  for (const btn of modeButtons) {
+    btn.classList.toggle("active", btn.dataset.mode === mode);
+  }
+}
+
 chrome.storage.sync.get({ enabled: true, mode: "timer" }, (stored) => {
   toggle.checked = stored.enabled;
-  modeSelect.value = stored.mode;
+  setMode(stored.mode);
 });
 
 toggle.addEventListener("change", () => {
   chrome.storage.sync.set({ enabled: toggle.checked });
 });
 
-modeSelect.addEventListener("change", () => {
-  chrome.storage.sync.set({ mode: modeSelect.value });
-});
+for (const btn of modeButtons) {
+  btn.addEventListener("click", () => {
+    setMode(btn.dataset.mode);
+    chrome.storage.sync.set({ mode: btn.dataset.mode });
+  });
+}
 
 optionsLink.addEventListener("click", (e) => {
   e.preventDefault();

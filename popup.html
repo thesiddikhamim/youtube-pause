@@ -4,119 +4,126 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YouTube Mindful Pause</title>
+  <link rel="stylesheet" href="ui.css" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Roboto, "Segoe UI", Arial, sans-serif;
-      background: #141926;
-      color: #e8eaf0;
-      width: 260px;
-      padding: 18px 16px;
+      width: 300px;
+      padding: 20px 16px 16px;
     }
+
     .header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 12px;
+      padding: 0 4px 16px;
+      border-bottom: 1px solid var(--line);
     }
-    .logo {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 32% 30%, #5aadff, #1a73e8 70%);
-      box-shadow: 0 0 14px rgba(26, 115, 232, 0.6);
+    .orb {
+      width: 26px;
+      height: 26px;
       flex-shrink: 0;
     }
-    h1 { font-size: 14.5px; color: #fff; line-height: 1.25; }
-    .tag { font-size: 11.5px; color: #8a94a6; }
-    .switch-row {
+    .title-block {
+      min-width: 0;
+    }
+    .title-block h1 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 16px;
+      font-variation-settings: "opsz" 120, "SOFT" 100;
+      color: var(--text);
+      letter-spacing: 0.1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .title-block .eyebrow {
+      margin-top: 2px;
+    }
+
+    .row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #0b0e15;
-      border: 1px solid #232b3d;
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 12px;
+      gap: 12px;
+      padding: 14px 4px;
+      border-bottom: 1px solid var(--line);
     }
-    .switch-row .label { font-size: 13.5px; }
-    .switch-row select {
-      background: #0b0e15;
-      border: 1px solid #2a3350;
-      color: #e8eaf0;
-      font-family: inherit;
+    .row:last-of-type {
+      border-bottom: none;
+    }
+    .row .label {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .row .hint {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 2px;
+    }
+    .row--last {
+      border-bottom: none;
+    }
+    .row-label {
+      min-width: 0;
+    }
+
+    .segmented {
+      margin-top: 13px;
+      margin-bottom: 14px;
+    }
+    .segmented button {
       font-size: 12.5px;
-      padding: 7px 8px;
-      border-radius: 8px;
-      outline: none;
-      cursor: pointer;
     }
-    .switch-row select:focus { border-color: #1a73e8; }
-    .switch { position: relative; width: 42px; height: 24px; }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider {
-      position: absolute;
-      inset: 0;
-      background: #2a3350;
-      border-radius: 24px;
-      cursor: pointer;
-      transition: background 0.2s ease;
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .slider::before {
-      content: "";
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      left: 3px;
-      top: 3px;
-      background: #fff;
-      border-radius: 50%;
-      transition: transform 0.2s ease;
-    }
-    .switch input:checked + .slider { background: #1a73e8; }
-    .switch input:checked + .slider::before { transform: translateX(18px); }
-    .link {
-      display: block;
-      text-align: center;
-      background: #0b0e15;
-      border: 1px solid #232b3d;
-      color: #8a94a6;
-      text-decoration: none;
-      font-size: 12.5px;
-      padding: 9px;
-      border-radius: 10px;
-      transition: color 0.15s ease, border-color 0.15s ease;
-    }
-    .link:hover { color: #5aadff; border-color: #1a73e8; }
   </style>
 </head>
 <body>
   <div class="header">
-    <div class="logo"></div>
-    <div>
+    <div class="orb" aria-hidden="true"></div>
+    <div class="title-block">
       <h1>Mindful Pause</h1>
-      <div class="tag">YouTube</div>
+      <div class="eyebrow">YouTube</div>
     </div>
   </div>
 
-  <div class="switch-row">
-    <span class="label">Pause before videos</span>
+  <div class="row">
+    <div class="row-label">
+      <div class="label">Pause before videos</div>
+    </div>
     <label class="switch">
       <input type="checkbox" id="toggle" />
-      <span class="slider"></span>
+      <span class="track"></span>
     </label>
   </div>
 
-  <div class="switch-row">
-    <label class="label" for="mode">Mode</label>
-    <select id="mode">
-      <option value="timer">Timer (10s pause)</option>
-      <option value="journal">Journal (15 words)</option>
-    </select>
+  <div class="row row--last">
+    <div class="row-label">
+      <div class="label">Pause mode</div>
+      <div class="hint">Wait out the timer, or write it down.</div>
+    </div>
+  </div>
+  <div class="segmented" id="mode" role="tablist" aria-label="Pause mode">
+    <button type="button" data-mode="timer" role="tab">Timer</button>
+    <button type="button" data-mode="journal" role="tab">Journal</button>
   </div>
 
-  <a class="link" href="#" id="options">Edit pause message &amp; mode</a>
-  <a class="link" href="#" id="history" style="margin-top: 8px;">View watch history</a>
+  <div class="links">
+    <a class="row-link" href="#" id="options">
+      <span>Message &amp; mode</span>
+      <span class="arrow">EDIT →</span>
+    </a>
+    <a class="row-link" href="#" id="history">
+      <span>Watch history</span>
+      <span class="arrow">VIEW →</span>
+    </a>
+  </div>
 
   <script src="popup.js"></script>
 </body>

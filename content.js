@@ -21,6 +21,24 @@ function loadSettings() {
   });
 }
 
+function injectOverlayFonts() {
+  const url = (file) => chrome.runtime.getURL(`fonts/${file}`);
+  const faces = [
+    `@font-face{font-family:"Fraunces";font-style:normal;font-weight:100 900;src:url("${url("fraunces-variable.woff2")}") format("woff2")}`,
+    `@font-face{font-family:"Fraunces";font-style:italic;font-weight:100 900;src:url("${url("fraunces-variable-italic.woff2")}") format("woff2")}`,
+    `@font-face{font-family:"Instrument Sans";font-style:normal;font-weight:400 700;src:url("${url("instrument-variable.woff2")}") format("woff2")}`,
+    `@font-face{font-family:"Instrument Sans";font-style:italic;font-weight:400 700;src:url("${url("instrument-variable-italic.woff2")}") format("woff2")}`,
+    `@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;src:url("${url("plexmono-400.woff2")}") format("woff2")}`,
+    `@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;src:url("${url("plexmono-500.woff2")}") format("woff2")}`,
+    `@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:600;src:url("${url("plexmono-600.woff2")}") format("woff2")}`,
+  ].join("");
+  const style = document.createElement("style");
+  style.textContent = faces;
+  document.documentElement.appendChild(style);
+}
+
+injectOverlayFonts();
+
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "sync") return;
   for (const key of Object.keys(DEFAULT_SETTINGS)) {
@@ -116,9 +134,11 @@ function buildOverlay() {
     overlay.innerHTML = `
       ${modeBadge}
       <p class="ytmp-message"></p>
-      <textarea class="ytmp-journal" rows="5"
-        placeholder="In at least ${MIN_WORDS} words, explain why this video truly helps you right now, how you'll use it, or be honest that you're just procrastinating..."></textarea>
-      <div class="ytmp-words"><span class="ytmp-wordcount">0</span>/${MIN_WORDS} words</div>
+      <div class="ytmp-journal-wrap">
+        <textarea class="ytmp-journal" rows="5"
+          placeholder="In at least ${MIN_WORDS} words, explain why this video truly helps you right now, how you'll use it, or be honest that you're just procrastinating..."></textarea>
+        <div class="ytmp-words"><span class="ytmp-wordcount">0</span>/${MIN_WORDS} words</div>
+      </div>
       <label class="ytmp-flag">
         <input type="checkbox" class="ytmp-flag-check" />
         <span>This is unimportant / I'm just wasting time</span>
