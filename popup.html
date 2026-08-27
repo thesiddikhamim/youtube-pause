@@ -6,82 +6,21 @@
   <title>YouTube Mindful Pause</title>
   <link rel="stylesheet" href="ui.css" />
   <style>
-    body {
-      width: 300px;
-      padding: 20px 16px 16px;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 4px 16px;
-      border-bottom: 1px solid var(--line);
-    }
-    .orb {
-      width: 26px;
-      height: 26px;
-      flex-shrink: 0;
-    }
-    .title-block {
-      min-width: 0;
-    }
-    .title-block h1 {
-      font-family: var(--font-display);
-      font-weight: 500;
-      font-size: 16px;
-      font-variation-settings: "opsz" 120, "SOFT" 100;
-      color: var(--text);
-      letter-spacing: 0.1px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .title-block .eyebrow {
-      margin-top: 2px;
-    }
-
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 14px 4px;
-      border-bottom: 1px solid var(--line);
-    }
-    .row:last-of-type {
-      border-bottom: none;
-    }
-    .row .label {
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--text);
-    }
-    .row .hint {
-      font-size: 12px;
-      color: var(--text-3);
-      margin-top: 2px;
-    }
-    .row--last {
-      border-bottom: none;
-    }
-    .row-label {
-      min-width: 0;
-    }
-
-    .segmented {
-      margin-top: 13px;
-      margin-bottom: 14px;
-    }
-    .segmented button {
-      font-size: 12.5px;
-    }
-
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    body { width: 300px; padding: 20px 16px 16px; }
+    .header { display: flex; align-items: center; gap: 12px; padding: 0 4px 16px; border-bottom: 1px solid var(--line); }
+    .orb { width: 26px; height: 26px; flex-shrink: 0; }
+    .title-block { min-width: 0; }
+    .title-block h1 { font-family: var(--font-display); font-weight: 500; font-size: 16px; font-variation-settings: "opsz" 120, "SOFT" 100; color: var(--text); letter-spacing: .1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .title-block .eyebrow { margin-top: 2px; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--line); }
+    .row:last-of-type { border-bottom: none; }
+    .row .label { font-size: 13.5px; font-weight: 500; color: var(--text); }
+    .row .hint { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+    .row--last { border-bottom: none; }
+    .row-label { min-width: 0; }
+    .segmented { margin-top: 13px; margin-bottom: 14px; }
+    .segmented button { font-size: 12.5px; }
+    .links { display: flex; flex-direction: column; gap: 8px; }
   </style>
 </head>
 <body>
@@ -94,20 +33,12 @@
   </div>
 
   <div class="row">
-    <div class="row-label">
-      <div class="label">Pause before videos</div>
-    </div>
-    <label class="switch">
-      <input type="checkbox" id="toggle" />
-      <span class="track"></span>
-    </label>
+    <div class="row-label"><div class="label">Pause before videos</div></div>
+    <label class="switch"><input type="checkbox" id="toggle" /><span class="track"></span></label>
   </div>
 
   <div class="row row--last">
-    <div class="row-label">
-      <div class="label">Pause mode</div>
-      <div class="hint">Wait out the timer, or write it down.</div>
-    </div>
+    <div class="row-label"><div class="label">Pause mode</div><div class="hint">Wait out the timer, or write it down.</div></div>
   </div>
   <div class="segmented" id="mode" role="tablist" aria-label="Pause mode">
     <button type="button" data-mode="timer" role="tab">Timer</button>
@@ -115,47 +46,34 @@
   </div>
 
   <div class="row">
-    <div class="row-label">
-      <div class="label">Hide recommendations</div>
-      <div class="hint">Sidebar on watch pages.</div>
-    </div>
-    <label class="switch">
-      <input type="checkbox" id="hideRecommendations" />
-      <span class="track"></span>
-    </label>
+    <div class="row-label"><div class="label">Hide recommendations</div><div class="hint">Sidebar on watch pages.</div></div>
+    <label class="switch"><input type="checkbox" id="hideRecommendations" /><span class="track"></span></label>
   </div>
-
   <div class="row">
-    <div class="row-label">
-      <div class="label">Hide homepage</div>
-      <div class="hint">The whole Home feed.</div>
-    </div>
-    <label class="switch">
-      <input type="checkbox" id="hideHome" />
-      <span class="track"></span>
-    </label>
+    <div class="row-label"><div class="label">Hide homepage</div><div class="hint">The whole Home feed.</div></div>
+    <label class="switch"><input type="checkbox" id="hideHome" /><span class="track"></span></label>
   </div>
-
   <div class="row row--last">
-    <div class="row-label">
-      <div class="label">Hide Shorts</div>
-      <div class="hint">Shelves and sidebar entry.</div>
-    </div>
-    <label class="switch">
-      <input type="checkbox" id="hideShorts" />
-      <span class="track"></span>
-    </label>
+    <div class="row-label"><div class="label">Hide Shorts</div><div class="hint">Shelves and sidebar entry.</div></div>
+    <label class="switch"><input type="checkbox" id="hideShorts" /><span class="track"></span></label>
   </div>
 
   <div class="links">
-    <a class="row-link" href="#" id="options">
-      <span>Message &amp; mode</span>
-      <span class="arrow">EDIT →</span>
-    </a>
-    <a class="row-link" href="#" id="history">
-      <span>Watch history</span>
-      <span class="arrow">VIEW →</span>
-    </a>
+    <a class="row-link" href="#" id="options"><span>Message &amp; mode</span><span class="arrow">EDIT →</span></a>
+    <a class="row-link" href="#" id="history"><span>Watch history</span><span class="arrow">VIEW →</span></a>
+  </div>
+
+  <div class="protection-modal" id="protectionModal" hidden>
+    <div class="protection-dialog" role="dialog" aria-modal="true" aria-labelledby="protectionTitle">
+      <h2 id="protectionTitle">Pause before removing a protection</h2>
+      <p>You enabled this to reduce distractions. Why do you need to turn it off now?</p>
+      <textarea class="field" id="protectionReason" placeholder="Write at least 30 words..."></textarea>
+      <div class="protection-word-count" id="protectionWordCount">0 / 30 words</div>
+      <div class="protection-actions">
+        <button class="protection-cancel" id="protectionCancel" type="button">Cancel</button>
+        <button class="btn" id="protectionConfirm" type="button" disabled>Turn off</button>
+      </div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

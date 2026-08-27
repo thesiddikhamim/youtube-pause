@@ -6,309 +6,67 @@
   <title>YouTube Mindful Pause — Settings</title>
   <link rel="stylesheet" href="ui.css" />
   <style>
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 56px 20px 80px;
-    }
-
-    .page {
-      width: 100%;
-      max-width: 560px;
-    }
-
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 38px;
-    }
-    .orb {
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-    }
-    h1.display {
-      font-size: 30px;
-      letter-spacing: 0.2px;
-    }
-    .sub {
-      font-size: 14px;
-      color: var(--text-2);
-      margin-top: 6px;
-    }
-
-    .section {
-      margin-bottom: 34px;
-    }
-    .section .field-label {
-      margin-bottom: 12px;
-    }
-
-    .mode-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .mode-card {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      padding: 18px 18px 16px;
-      cursor: pointer;
-      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-    }
-    .mode-card:hover {
-      border-color: var(--line-strong);
-      background: var(--surface-2);
-    }
-    .mode-card.active {
-      border-color: rgba(124, 197, 255, 0.55);
-      background: rgba(30, 140, 255, 0.07);
-      box-shadow: 0 0 24px rgba(46, 141, 255, 0.14), inset 0 0 0 1px rgba(124, 197, 255, 0.12);
-    }
-    .mode-card input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .mode-card .name {
-      font-family: var(--font-display);
-      font-weight: 500;
-      font-size: 18px;
-      font-variation-settings: "opsz" 100, "SOFT" 100;
-      color: var(--text);
-      margin-bottom: 5px;
-    }
-    .mode-card .desc {
-      font-size: 12.5px;
-      line-height: 1.55;
-      color: var(--text-2);
-    }
-    .mode-card .check {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 1px solid var(--line-strong);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: #000;
-      opacity: 0;
-      transition: opacity 0.15s ease;
-    }
-    .mode-card.active .check {
-      background: var(--breath);
-      border-color: var(--breath);
-      opacity: 1;
-      box-shadow: 0 0 10px rgba(124, 197, 255, 0.6);
-    }
-
-    .note {
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--text-3);
-      margin-top: 10px;
-    }
-    .hidden {
-      display: none;
-    }
-
-    textarea.field {
-      min-height: 140px;
-      resize: vertical;
-    }
-
-    .save-row {
-      display: flex;
-      justify-content: center;
-      margin-top: 4px;
-    }
-    .delay-input {
-      display: flex;
-      align-items: center;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      padding: 0 12px;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-    .delay-input:focus-within {
-      border-color: rgba(124, 197, 255, 0.55);
-      box-shadow: 0 0 0 3px rgba(46, 141, 255, 0.16);
-    }
-    .delay-input input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 16px;
-      font-weight: 500;
-      padding: 11px 0;
-      outline: none;
-    }
-    .delay-input .unit {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-3);
-      padding-left: 10px;
-      white-space: nowrap;
-    }
-    .delay-input input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-    }
-
-    .status-wrap {
-      display: flex;
-      justify-content: center;
-      margin-top: 18px;
-    }
-
-    .history-row {
-      margin-top: 38px;
-    }
-
-    .toggle-row {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 11px;
-      padding: 13px 14px;
-      cursor: pointer;
-      transition: border-color 0.15s ease, background 0.15s ease;
-    }
-    .toggle:hover {
-      border-color: var(--line-strong);
-      background: var(--surface-2);
-    }
-    .toggle-text {
-      min-width: 0;
-    }
-    .toggle-name {
-      display: block;
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--text);
-    }
-    .toggle-hint {
-      display: block;
-      font-size: 12px;
-      color: var(--text-3);
-      margin-top: 2px;
-      line-height: 1.45;
-    }
+    body { min-height: 100vh; display: flex; justify-content: center; padding: 56px 20px 80px; }
+    .page { width: 100%; max-width: 560px; }
+    .header { display: flex; align-items: center; gap: 14px; margin-bottom: 38px; }
+    .orb { width: 40px; height: 40px; flex-shrink: 0; }
+    h1.display { font-size: 30px; letter-spacing: .2px; }
+    .sub { font-size: 14px; color: var(--text-2); margin-top: 6px; }
+    .section { margin-bottom: 34px; }
+    .section .field-label { margin-bottom: 12px; }
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .mode-card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 13px; padding: 18px 18px 16px; cursor: pointer; transition: border-color .15s ease,background .15s ease,box-shadow .15s ease; }
+    .mode-card:hover { border-color: var(--line-strong); background: var(--surface-2); }
+    .mode-card.active { border-color: rgba(124,197,255,.55); background: rgba(30,140,255,.07); box-shadow: 0 0 24px rgba(46,141,255,.14),inset 0 0 0 1px rgba(124,197,255,.12); }
+    .mode-card input { position: absolute; opacity: 0; pointer-events: none; }
+    .mode-card .name { font-family: var(--font-display); font-weight: 500; font-size: 18px; font-variation-settings: "opsz" 100, "SOFT" 100; color: var(--text); margin-bottom: 5px; }
+    .mode-card .desc { font-size: 12.5px; line-height: 1.55; color: var(--text-2); }
+    .mode-card .check { position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--line-strong); display: flex; align-items: center; justify-content: center; font-size: 10px; color: #000; opacity: 0; transition: opacity .15s ease; }
+    .mode-card.active .check { background: var(--breath); border-color: var(--breath); opacity: 1; box-shadow: 0 0 10px rgba(124,197,255,.6); }
+    .note { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); margin-top: 10px; }
+    .hidden { display: none; }
+    textarea.field { min-height: 140px; resize: vertical; }
+    .save-row { display: flex; justify-content: center; margin-top: 4px; }
+    .delay-input { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; padding: 0 12px; }
+    .delay-input input { width: 100%; background: transparent; border: none; color: var(--text); font-family: var(--font-mono); font-size: 16px; font-weight: 500; padding: 11px 0; outline: none; }
+    .delay-input .unit { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); padding-left: 10px; white-space: nowrap; }
+    .status-wrap { display: flex; justify-content: center; margin-top: 18px; }
+    .history-row { margin-top: 38px; }
+    .toggle-row { display: flex; flex-direction: column; gap: 10px; }
+    .toggle { display: flex; align-items: center; justify-content: space-between; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; padding: 13px 14px; cursor: pointer; }
+    .toggle-text { min-width: 0; }
+    .toggle-name { display: block; font-size: 13.5px; font-weight: 500; color: var(--text); }
+    .toggle-hint { display: block; font-size: 12px; color: var(--text-3); margin-top: 2px; line-height: 1.45; }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="header">
-      <div class="orb" aria-hidden="true"></div>
-      <div>
-        <h1 class="display">Settings</h1>
-        <p class="sub">Choose how the pause works before every video.</p>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="field-label">Pause mode</div>
-      <div class="mode-grid">
-        <label class="mode-card" id="mode-timer">
-          <input type="radio" name="mode" value="timer" />
-          <div class="check">✓</div>
-          <div class="name">Timer</div>
-          <div class="desc">A breathing circle with a countdown. Wait it out, then decide.</div>
-        </label>
-        <label class="mode-card" id="mode-journal">
-          <input type="radio" name="mode" value="journal" />
-          <div class="check">✓</div>
-          <div class="name">Journal</div>
-          <div class="desc">Write at least 15 words on why this video truly helps you — or admit you're procrastinating.</div>
-        </label>
-      </div>
-    </div>
-
-    <div class="section">
-      <label class="field-label" for="message">Pause message</label>
-      <textarea class="field" id="message" placeholder="Type your reminder..."></textarea>
-    </div>
-
-    <div class="section" id="delayRow">
-      <label class="field-label" for="delay">Pause duration</label>
-      <div class="delay-input">
-        <input id="delay" type="number" min="1" max="60" />
-        <span class="unit">SECONDS</span>
-      </div>
-    </div>
-
-    <p class="note hidden" id="journalNote">In Journal mode, the minimum is always 15 words — you can write more.</p>
-
-    <div class="section">
-      <div class="field-label">Hide distractions</div>
-      <div class="toggle-row">
-        <label class="toggle">
-          <span class="toggle-text">
-            <span class="toggle-name">Hide recommendations</span>
-            <span class="toggle-hint">Removes the related-video sidebar on watch pages.</span>
-          </span>
-          <span class="switch">
-            <input type="checkbox" id="hideRecommendations" />
-            <span class="track"></span>
-          </span>
-        </label>
-        <label class="toggle">
-          <span class="toggle-text">
-            <span class="toggle-name">Hide homepage</span>
-            <span class="toggle-hint">Removes the entire Home feed on youtube.com.</span>
-          </span>
-          <span class="switch">
-            <input type="checkbox" id="hideHome" />
-            <span class="track"></span>
-          </span>
-        </label>
-        <label class="toggle">
-          <span class="toggle-text">
-            <span class="toggle-name">Hide Shorts</span>
-            <span class="toggle-hint">Removes Shorts shelves and the Shorts entry from the sidebar.</span>
-          </span>
-          <span class="switch">
-            <input type="checkbox" id="hideShorts" />
-            <span class="track"></span>
-          </span>
-        </label>
-      </div>
-    </div>
-
-    <div class="save-row">
-      <button class="btn" id="save">Save changes</button>
-    </div>
-
-    <div class="status-wrap">
-      <div class="status" id="status">Saved</div>
-    </div>
-
-    <div class="history-row">
-      <a class="row-link" href="#" id="history">
-        <span>Watch history</span>
-        <span class="arrow">VIEW →</span>
-      </a>
+    <div class="header"><div class="orb" aria-hidden="true"></div><div><h1 class="display">Settings</h1><p class="sub">Choose how the pause works before every video.</p></div></div>
+    <div class="section"><div class="field-label">Pause mode</div><div class="mode-grid">
+      <label class="mode-card" id="mode-timer"><input type="radio" name="mode" value="timer" /><div class="check">✓</div><div class="name">Timer</div><div class="desc">A breathing circle with a countdown. Wait it out, then decide.</div></label>
+      <label class="mode-card" id="mode-journal"><input type="radio" name="mode" value="journal" /><div class="check">✓</div><div class="name">Journal</div><div class="desc">Write at least 15 words on why this video truly helps you — or admit you're procrastinating.</div></label>
+    </div></div>
+    <div class="section"><label class="field-label" for="message">Pause message</label><textarea class="field" id="message" placeholder="Type your reminder..."></textarea></div>
+    <div class="section" id="delayRow"><label class="field-label" for="delay">Pause duration</label><div class="delay-input"><input id="delay" type="number" min="1" max="60" /><span class="unit">SECONDS</span></div></div>
+    <p class="note hidden" id="journalNote">In Journal mode, removing an active distraction protection requires at least 30 words.</p>
+    <div class="section"><div class="field-label">Hide distractions</div><div class="toggle-row">
+      <label class="toggle"><span class="toggle-text"><span class="toggle-name">Hide recommendations</span><span class="toggle-hint">Removes the related-video sidebar on watch pages.</span></span><span class="switch"><input type="checkbox" id="hideRecommendations" /><span class="track"></span></span></label>
+      <label class="toggle"><span class="toggle-text"><span class="toggle-name">Hide homepage</span><span class="toggle-hint">Removes the entire Home feed on youtube.com.</span></span><span class="switch"><input type="checkbox" id="hideHome" /><span class="track"></span></span></label>
+      <label class="toggle"><span class="toggle-text"><span class="toggle-name">Hide Shorts</span><span class="toggle-hint">Removes Shorts shelves and the Shorts entry from the sidebar.</span></span><span class="switch"><input type="checkbox" id="hideShorts" /><span class="track"></span></span></label>
+    </div></div>
+    <div class="save-row"><button class="btn" id="save">Save changes</button></div>
+    <div class="status-wrap"><div class="status" id="status">Saved</div></div>
+    <div class="history-row"><a class="row-link" href="#" id="history"><span>Watch history</span><span class="arrow">VIEW →</span></a></div>
+  </div>
+  <div class="protection-modal" id="protectionModal" hidden>
+    <div class="protection-dialog" role="dialog" aria-modal="true" aria-labelledby="protectionTitle">
+      <h2 id="protectionTitle">Pause before removing a protection</h2>
+      <p>You enabled this to reduce distractions. Why do you need to turn it off now?</p>
+      <textarea class="field" id="protectionReason" placeholder="Write at least 30 words..."></textarea>
+      <div class="protection-word-count" id="protectionWordCount">0 / 30 words</div>
+      <div class="protection-actions"><button class="protection-cancel" id="protectionCancel" type="button">Cancel</button><button class="btn" id="protectionConfirm" type="button" disabled>Turn off</button></div>
     </div>
   </div>
-
   <script src="options.js"></script>
 </body>
 </html>
