@@ -1,6 +1,7 @@
-// Home shortcut override. This runs before document-level handlers so plain J
-// remains available for YouTube's own keyboard controls, while Ctrl+Option+J
-// (Ctrl+Alt+J in browser events) returns to the YouTube homepage.
+// Ctrl+Option+J (Ctrl+Alt+J in browser events) returns to the YouTube homepage.
+// Plain J is only suppressed while Mindful Pause is open, preventing the old
+// overlay handler from treating it as a shortcut while leaving normal YouTube
+// keyboard controls untouched the rest of the time.
 window.addEventListener(
   "keydown",
   (event) => {
@@ -13,9 +14,12 @@ window.addEventListener(
       return;
     }
 
-    // Prevent the old plain-J handler in content.js from firing, without
-    // blocking YouTube's own normal J shortcut.
-    if (!event.ctrlKey && !event.altKey && !event.metaKey) {
+    if (
+      !event.ctrlKey &&
+      !event.altKey &&
+      !event.metaKey &&
+      document.querySelector(".ytmp-overlay")
+    ) {
       event.stopImmediatePropagation();
     }
   },
